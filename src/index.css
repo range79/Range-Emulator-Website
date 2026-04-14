@@ -1,26 +1,31 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 
 :root {
-  /* Material 3 App Mirror (Obsidian #000000 + SurfaceVariant) */
+  /* Exact Android App Material 3 Parity (Obsidian) */
   --bg-deep: #000000;
   --surface: #121212;
-  --surface-variant: rgba(28, 27, 31, 0.75);
+  --surface-variant: rgba(28, 27, 31, 1);
   --on-surface: #fdfdfd;
   --on-surface-variant: #938f99;
+  
+  /* Brand Tokens from Theme.kt (seedColor = 0xFF6750A4) */
   --brand: #6750A4;
-  --brand-bright: #d0bcff;
+  --brand-bright: #D0BCFF; 
   --brand-container: rgba(103, 80, 164, 0.12);
-  /* App Success Green (#4CAF50) */
+  
+  /* Functional App Colors from PerformanceComponents.kt */
   --success: #4CAF50;
-  --success-glow: rgba(76, 175, 80, 0.25);
-  --success-alpha: rgba(76, 175, 80, 0.12);
-  /* App Warning Amber (#FFFFC107) */
-  --warning: #ffc107;
-  --warning-alpha: rgba(255, 193, 7, 0.12);
-  /* App Error Red (#ef4444) */
-  --error: #ef4444;
-  --error-alpha: rgba(239, 68, 68, 0.12);
-  --font-sans: "Plus Jakarta Sans", "Inter", -apple-system, system-ui, sans-serif;
+  --error: #FF0000;
+  --info: #2196F3;
+  --warning: #FF9800;
+  --cyan: #00BCD4;
+
+  /* Shapes from RoundedCornerShape(28.dp / 10.dp) */
+  --radius-xl: 32px;
+  --radius-l: 28px;
+  --radius-m: 10px;
+  
+  --font-sans: "Plus Jakarta Sans", "Outfit", -apple-system, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
 
@@ -106,25 +111,38 @@ a {
 /* CORE Cockpit Card Morphology */
 .glass-card-cockpit {
   position: relative;
-  border-radius: 28px;
+  border-radius: 32px; /* Smoother M3 radius */
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   background: linear-gradient(
-    180deg,
-    rgba(28, 27, 31, 0.9) 0%,
-    rgba(18, 18, 18, 0.7) 100%
+    165deg,
+    rgba(28, 27, 31, 1) 0%,
+    rgba(18, 18, 18, 0.95) 50%,
+    rgba(10, 10, 10, 1) 100%
   );
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 
+    0 10px 30px -10px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.05);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
 }
 
 .glass-card-cockpit::before {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 16px 16px;
+  background-image: radial-gradient(rgba(103, 80, 164, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
   pointer-events: none;
+  opacity: 0.5;
+}
+
+.glass-card-cockpit:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 20px 40px -15px rgba(0, 0, 0, 0.6),
+    inset 0 1px 2px rgba(255, 255, 255, 0.1);
 }
 
 /* App-style Status Badges */
