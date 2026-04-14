@@ -1,304 +1,177 @@
-import type { CSSProperties } from "react";
-import type { DetectedOS } from "../hooks/useDetectedOS";
-import { DecryptText } from "./DecryptText";
-import { GlassCard } from "./GlassCard";
+import { useState } from "react";
 import { ScrollReveal } from "./ScrollReveal";
 
-function IconWindows({ glow }: { glow: boolean }) {
+interface OSProps {
+  title: string;
+  icon: React.ReactNode;
+  description: string;
+  action: React.ReactNode;
+}
+
+function OSCard({ title, icon, description, action }: OSProps) {
   return (
-    <svg
-      width="28"
-      height="28"
-      viewBox="0 0 24 24"
-      aria-hidden
+    <div 
+      className="glass-card-cockpit"
       style={{
-        filter: glow ? "drop-shadow(0 0 10px rgba(103, 80, 164, 0.75))" : undefined,
+        padding: "24px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "16px",
+        height: "100%",
+        minHeight: "360px" // Ensure consistency
       }}
     >
-      <path
-        fill="currentColor"
-        d="M3 5.548l7.2-.994v6.906H3V5.548zm0 7.254h7.2v6.962L3 18.769v-6.967zm8.213-8.15L21 4.2v7.51h-9.787V4.652zm0 15.444V12.26H21V19.8l-9.787 1.336z"
-      />
-    </svg>
+      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <div style={{
+          width: 40,
+          height: 40,
+          borderRadius: "12px",
+          background: "rgba(255, 255, 255, 0.03)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          border: "1px solid rgba(255, 255, 255, 0.05)",
+          color: "white" // Force SVG visibility
+        }}>
+          {icon}
+        </div>
+        <h4 style={{ fontSize: "1.1rem", fontWeight: 800, color: "white", margin: 0 }}>{title}</h4>
+      </div>
+      
+      <p style={{ fontSize: "0.85rem", color: "var(--on-surface-variant)", lineHeight: 1.5, margin: 0 }}>
+        {description}
+      </p>
+
+      <div style={{ marginTop: "auto" }}>
+        {action}
+      </div>
+    </div>
   );
 }
 
-function IconApple({ glow }: { glow: boolean }) {
-  return (
-    <svg
-      width="26"
-      height="26"
-      viewBox="0 0 24 24"
-      aria-hidden
-      style={{
-        filter: glow ? "drop-shadow(0 0 10px rgba(103, 80, 164, 0.75))" : undefined,
-      }}
-    >
-      <path
-        fill="currentColor"
-        d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"
-      />
-    </svg>
-  );
-}
+export function SpiceSection() {
+  const [activeDistro, setActiveDistro] = useState<"debian" | "ubuntu" | "fedora" | "arch" | "flatpak">("ubuntu");
 
-function IconTux({ glow }: { glow: boolean }) {
-  return (
-    <svg
-      width="28"
-      height="28"
-      viewBox="0 0 24 24"
-      aria-hidden
-      style={{
-        filter: glow ? "drop-shadow(0 0 10px rgba(103, 80, 164, 0.75))" : undefined,
-      }}
-    >
-      <path
-        fill="currentColor"
-        d="M12.05 2.02c-1.46.12-2.68 1.21-2.99 2.62a3.3 3.3 0 0 0-.1.78c0 .52.11 1.02.32 1.48a3.6 3.6 0 0 0-1.35 1.15c-.88 1.07-1.36 2.4-1.36 3.8 0 2.25 1.1 4.25 2.8 5.45.42.29.87.52 1.35.7-.13.42-.2.86-.2 1.3 0 1.85.84 3.48 2.16 4.55a4.2 4.2 0 0 0-.43 1.85c0 1.25.56 2.37 1.44 3.13.96.83 2.23 1.28 3.55 1.28s2.6-.45 3.55-1.28c.88-.76 1.44-1.88 1.44-3.13 0-.65-.15-1.25-.43-1.85 1.32-1.07 2.16-2.7 2.16-4.55q0-.69-.2-1.3c.48-.18.93-.41 1.35-.7 1.7-1.2 2.8-3.2 2.8-5.45 0-1.4-.48-2.73-1.36-3.8a3.6 3.6 0 0 0-1.35-1.15c.21-.46.32-.96.32-1.48q0-.42-.1-.78c-.31-1.41-1.53-2.5-2.99-2.62h-.05zM9.2 14.6c.28.25.56.48.84.65-.08.45-.06.9.06 1.35-.24.23-.5.44-.76.61-.43.25-.9.4-1.37.48-.2.03-.4.06-.6.08-.15.01-.29.02-.43.01-.1-.01-.21-.02-.3-.04l.1-.02c.64-.15 1.25-.43 1.77-.83s.96-.96 1.3-1.55c-.1 0-.2-.02-.3-.07z"
-      />
-    </svg>
-  );
-}
-
-type Props = { detected: DetectedOS };
-
-function platformCardStyle(highlight: boolean): CSSProperties {
-  return {
-    padding: "1.35rem 1.25rem",
-    color: "var(--text)",
-    display: "flex",
-    flexDirection: "column",
-    gap: "0.75rem",
-    boxShadow: highlight ? "inset 0 0 0 1px rgba(103, 80, 164, 0.38)" : undefined,
-    borderRadius: "calc(16px - 2px)",
-    transition: "box-shadow 0.25s",
+  const distros = {
+    debian: { label: "DEBIAN", color: "#D70A53", cmd: "sudo apt install virt-viewer" },
+    ubuntu: { label: "UBUNTU", color: "#E95420", cmd: "sudo apt install virt-viewer" },
+    fedora: { label: "FEDORA", color: "#51A2DA", cmd: "sudo dnf install virt-viewer" },
+    arch: { label: "ARCH", color: "#1793D1", cmd: "sudo pacman -S virt-viewer" },
+    flatpak: { label: "FLATPAK", color: "#4BB3FD", cmd: "flatpak install flathub org.virt_manager.virt-viewer" },
   };
-}
-
-export function SpiceSection({ detected }: Props) {
-  const win = detected === "windows";
-  const mac = detected === "mac";
-  const linux = detected === "linux";
 
   return (
-    <section
-      id="spice"
-      style={{
-        position: "relative",
-        zIndex: 1,
-        padding: "4rem 1.5rem",
-        maxWidth: 1120,
-        margin: "0 auto",
-        scrollMarginTop: "5rem",
-      }}
-    >
+    <section id="spice" style={{ padding: "4rem 1.5rem", maxWidth: 1000, margin: "0 auto" }}>
       <ScrollReveal>
-        <DecryptText
-          as="h2"
-          style={{
-            fontSize: "clamp(1.65rem, 4vw, 2.25rem)",
-            margin: "0 0 0.5rem",
-            fontWeight: 700,
-          }}
-        >
-          Pro-Grade Remote Access
-        </DecryptText>
-        <p style={{ color: "var(--text-muted)", maxWidth: 680, margin: "0 0 1rem" }}>
-          Low-latency SPICE and VNC pipelines optimized for Wi-Fi/LAN protocols. Pair with
-          Virt-Viewer for a seamless workstation experience on any display.
-        </p>
+        <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+          <h2 style={{ fontSize: "2rem", fontWeight: 900, marginBottom: "0.5rem" }}>Remote Cockpit</h2>
+          <p style={{ color: "var(--on-surface-variant)" }}>Connect to your virtual machine from any desktop OS using the SPICE protocol.</p>
+        </div>
       </ScrollReveal>
 
-      <ScrollReveal delayMs={60}>
-        <GlassCard style={{ marginBottom: "1.75rem" }}>
-          <div style={{ padding: "1.15rem 1.35rem" }}>
-            <p
-              style={{
-                margin: "0 0 0.65rem",
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.72rem",
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: "var(--electric)",
-              }}
-            >
-              Why SPICE
-            </p>
-            <ul
-              style={{
-                margin: 0,
-                paddingLeft: "1.15rem",
-                color: "var(--text-muted)",
-                fontSize: "0.93rem",
-                lineHeight: 1.65,
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.45rem",
-              }}
-            >
-              <li>
-                <strong style={{ color: "var(--text)" }}>Lower latency</strong> — tuned protocol
-                stack for responsive pointer and keyboard on LAN or Wi‑Fi.
-              </li>
-              <li>
-                <strong style={{ color: "var(--text)" }}>Sharper remote display</strong> — adaptive
-                compression and a pipeline aimed at fluid desktop UI, not just static frames.
-              </li>
-              <li>
-                <strong style={{ color: "var(--text)" }}>Desktop-class viewers</strong> — pair with
-                Virt-Viewer for full-screen, multi-monitor-friendly sessions when you need
-                workstation ergonomics.
-              </li>
-              <li>
-                <strong style={{ color: "var(--text)" }}>VNC when you need it</strong> — same console
-                also surfaces VNC; use whichever of <strong>SPICE</strong> or <strong>VNC</strong> fits
-                your setup.
-              </li>
-            </ul>
-          </div>
-        </GlassCard>
-      </ScrollReveal>
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-          gap: "1rem",
-        }}
-      >
-        <ScrollReveal delayMs={0}>
-          <GlassCard>
-            <div style={platformCardStyle(win)}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-              <IconWindows glow={win} />
-              <span style={{ fontWeight: 600, fontSize: "1.05rem" }}>Windows</span>
-              {win && (
-                <span
-                  style={{
-                    marginLeft: "auto",
-                    fontFamily: "var(--font-mono)",
-                    fontSize: "0.7rem",
-                    color: "var(--signal)",
-                    textShadow: "0 0 10px var(--signal-glow)",
-                  }}
-                >
-                  DETECTED
-                </span>
-              )}
-            </div>
-            <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-muted)" }}>
-              Latest x64 Virt-Viewer MSI from the official project site.
-            </p>
-            <a
-              href="https://gitlab.com/virt-viewer/virt-viewer/-/releases/v11.0/downloads/virt-viewer-x64-11.0-1.0.msi"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "0.65rem 1rem",
-                borderRadius: 10,
-                background: "rgba(103, 80, 164, 0.14)",
-                color: "var(--electric)",
-                fontWeight: 600,
-                textDecoration: "none",
-                border: "1px solid rgba(103, 80, 164, 0.38)",
-              }}
-            >
-              Open Virt-Viewer MSI installer
-            </a>
-            </div>
-          </GlassCard>
+      <div style={{ 
+        display: "grid", 
+        gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", 
+        gap: "1.5rem" 
+      }}>
+        {/* Windows */}
+        <ScrollReveal delayMs={100}>
+          <OSCard 
+            title="Windows"
+            icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M3,12V6.75L9,5.43V12H3M21,12V3L10,5.04V12H21M3,13V18.25L9,19.57V13H3M21,13V21L10,19.96V13H21Z"/></svg>}
+            description="High-performance Virt-Viewer MSI for x64 architectures. Features full-screen support and USB redirection."
+            action={
+              <a 
+                href="https://gitlab.com/virt-viewer/virt-viewer/-/releases/v11.0/downloads/virt-viewer-x64-11.0-1.0.msi" 
+                className="btn-cta"
+                style={{ width: "100%", fontSize: "0.8rem" }}
+              >
+                DOWNLOAD MSI (X64)
+              </a>
+            }
+          />
         </ScrollReveal>
 
-        <ScrollReveal delayMs={80}>
-          <GlassCard>
-            <div style={platformCardStyle(linux)}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-              <IconTux glow={linux} />
-              <span style={{ fontWeight: 600, fontSize: "1.05rem" }}>Linux</span>
-              {linux && (
-                <span
-                  style={{
-                    marginLeft: "auto",
+        {/* Linux with Tabs */}
+        <ScrollReveal delayMs={200}>
+          <OSCard 
+            title="Linux"
+            icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z"/></svg>}
+            description="Natively supported on all major distributions. Select your distribution to see the command."
+            action={
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                  {(Object.keys(distros) as Array<keyof typeof distros>).map((key) => (
+                    <button
+                      key={key}
+                      onClick={() => setActiveDistro(key)}
+                      style={{
+                        padding: "6px 10px",
+                        fontSize: "0.65rem",
+                        fontWeight: 800,
+                        borderRadius: "8px",
+                        border: "1px solid",
+                        borderColor: activeDistro === key ? distros[key].color : "rgba(255,255,255,0.1)",
+                        background: activeDistro === key ? `${distros[key].color}15` : "transparent",
+                        color: activeDistro === key ? distros[key].color : "rgba(255,255,255,0.4)",
+                        cursor: "pointer",
+                        transition: "all 0.2s ease"
+                      }}
+                    >
+                      {distros[key].label}
+                    </button>
+                  ))}
+                </div>
+                
+                <div style={{ 
+                  background: "rgba(0,0,0,0.3)", 
+                  borderRadius: "12px", 
+                  border: `1px solid ${distros[activeDistro].color}33`, 
+                  overflow: "hidden",
+                  minHeight: "80px",
+                  display: "flex",
+                  flexDirection: "column"
+                }}>
+                  <div style={{ 
+                    padding: "8px 12px", 
+                    background: `${distros[activeDistro].color}11`, 
+                    fontSize: "0.6rem", 
+                    fontWeight: 900, 
+                    color: distros[activeDistro].color,
+                    letterSpacing: "0.05em"
+                  }}>
+                    {distros[activeDistro].label} INSTALL
+                  </div>
+                  <code style={{ 
+                    padding: "12px", 
+                    fontSize: "0.75rem", 
+                    color: "white", 
                     fontFamily: "var(--font-mono)",
-                    fontSize: "0.7rem",
-                    color: "var(--signal)",
-                    textShadow: "0 0 10px var(--signal-glow)",
-                  }}
-                >
-                  DETECTED
-                </span>
-              )}
-            </div>
-            <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-muted)" }}>
-              Debian / Ubuntu family and Fedora / RHEL-family commands:
-            </p>
-            <code
-              style={{
-                display: "block",
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.8rem",
-                padding: "0.85rem",
-                borderRadius: 10,
-                background: "rgba(0,0,0,0.35)",
-                border: "1px solid rgba(103, 80, 164, 0.14)",
-                color: "#d0bcff",
-                whiteSpace: "pre-wrap",
-                wordBreak: "break-word",
-              }}
-            >
-              sudo apt install virt-viewer{"\n"}
-              <span style={{ color: "var(--text-muted)" }}># or</span>
-              {"\n"}
-              sudo dnf install virt-viewer
-            </code>
-            </div>
-          </GlassCard>
+                    wordBreak: "break-all"
+                  }}>
+                    {distros[activeDistro].cmd}
+                  </code>
+                </div>
+              </div>
+            }
+          />
         </ScrollReveal>
 
-        <ScrollReveal delayMs={160}>
-          <GlassCard>
-            <div style={platformCardStyle(mac)}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-              <IconApple glow={mac} />
-              <span style={{ fontWeight: 600, fontSize: "1.05rem" }}>macOS</span>
-              {mac && (
-                <span
-                  style={{
-                    marginLeft: "auto",
-                    fontFamily: "var(--font-mono)",
-                    fontSize: "0.7rem",
-                    color: "var(--signal)",
-                    textShadow: "0 0 10px var(--signal-glow)",
-                  }}
-                >
-                  DETECTED
-                </span>
-              )}
-            </div>
-            <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--text-muted)" }}>
-              Install via Homebrew:
-            </p>
-            <code
-              style={{
-                display: "block",
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.82rem",
-                padding: "0.85rem",
-                borderRadius: 10,
-                background: "rgba(0,0,0,0.35)",
-                border: "1px solid rgba(103, 80, 164, 0.14)",
-                color: "#d0bcff",
-                whiteSpace: "pre-wrap",
-              }}
-            >
-              brew install virt-viewer
-            </code>
-            </div>
-          </GlassCard>
+        {/* macOS */}
+        <ScrollReveal delayMs={300}>
+          <OSCard 
+            title="macOS"
+            icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71,19.5C17.88,20.74 17,21.95 15.66,21.97C14.32,22 13.89,21.18 12.37,21.18C10.84,21.18 10.37,21.95 9.1,22C7.79,22.05 6.8,20.68 5.96,19.47C4.25,17 2.94,12.45 4.7,9.39C5.57,7.87 7.13,6.91 8.82,6.88C10.1,6.86 11.32,7.75 12.11,7.75C12.89,7.75 14.37,6.68 15.92,6.84C16.57,6.87 18.39,7.1 19.56,8.82C19.47,8.88 17.39,10.1 17.41,12.63C17.44,15.65 20.06,16.66 20.09,16.67C20.06,16.74 19.67,18.11 18.71,19.5M13,3.5C13.73,2.67 14.94,2.04 15.94,2C16.07,3.17 15.6,4.35 14.9,5.19C14.21,6.04 13.07,6.7 11.95,6.61C11.8,5.46 12.36,4.26 13,3.5Z"/></svg>}
+            description="Use Homebrew to install the latest Virt-Viewer build. Supports Retina displays and Metal acceleration."
+            action={
+              <div style={{ background: "rgba(0,0,0,0.3)", borderRadius: "12px", border: "1px solid rgba(103, 80, 164, 0.2)", overflow: "hidden" }}>
+                  <div style={{ padding: "8px 12px", background: "rgba(103, 80, 164, 0.1)", fontSize: "0.6rem", fontWeight: 900, color: "var(--brand-bright)" }}>HOMEBREW</div>
+                  <code style={{ display: "block", padding: "12px", fontSize: "0.75rem", color: "white", fontFamily: "var(--font-mono)" }}>
+                    brew install virt-viewer
+                  </code>
+              </div>
+            }
+          />
         </ScrollReveal>
       </div>
     </section>
